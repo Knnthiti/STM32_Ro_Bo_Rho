@@ -216,7 +216,7 @@ int main(void)
    //UAST2 esp_s3_zero to STM32
    HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
 
-   Setup_MPU6050(&hi2c2);
+//   Setup_MPU6050(&hi2c2);
 
   /* USER CODE END 2 */
 
@@ -235,7 +235,7 @@ int main(void)
          if(Str_PS2.seting[1] == 1){
 //		 addr = Scan_I2C(&hi2c2);
 
-		 ReadMPU6050();
+//		 ReadMPU6050();
 //		 app_ros_comm_runner();
 //		 app_ros_comm_txPoll();
 
