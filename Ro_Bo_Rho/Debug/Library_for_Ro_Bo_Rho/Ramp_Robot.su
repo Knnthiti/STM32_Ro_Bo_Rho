@@ -1,0 +1,12 @@
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:13:6:Cartesian_to_Polar	24	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:18:7:get_Polar_r	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:22:7:get_Polar_Rad_s	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:35:6:Setup_Ramp_Polar_r	24	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:47:6:Ramp_Polar_r	16	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:68:7:get_V_r	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:72:7:get_V_Rad_s	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:81:6:Polar_to_Cartesian	24	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:86:7:get_Cartesian_Vx	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:90:7:get_Cartesian_Vy	4	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:100:6:Setup_Ramp_Vz	24	static
+../Library_for_Ro_Bo_Rho/Ramp_Robot.c:113:7:Ramp_Vz	16	static
