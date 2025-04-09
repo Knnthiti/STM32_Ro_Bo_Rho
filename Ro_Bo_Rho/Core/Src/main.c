@@ -233,6 +233,8 @@ int main(void)
 
 	  if((uwTick - PastTime) > 10){
          if(Str_PS2.seting[1] == 1){
+         digitalWrite("PE07" , 1);
+
 //		 addr = Scan_I2C(&hi2c2);
 
 //		 ReadMPU6050();
@@ -242,10 +244,10 @@ int main(void)
 //		 Deg = getDegreeZ();
 
 
-//	     Motor_DutyCycle_LF(4000);
-//		 Motor_DutyCycle_LB(4000);
-//		 Motor_DutyCycle_RF(-4000);
-//		 Motor_DutyCycle_RB(-4000);
+//	     Motor_DutyCycle_LF(1000);
+//		 Motor_DutyCycle_LB(-2000);
+//		 Motor_DutyCycle_RF(-2000);
+//		 Motor_DutyCycle_RB(-2000);
 //	     Motor_DutyCycle_EXTRA1(4000);
 //	     Motor_DutyCycle_EXTRA2(-4000);
 
@@ -317,6 +319,8 @@ int main(void)
         	 Motor_DutyCycle_RB(0);
         	 Motor_DutyCycle_EXTRA1(0);
         	 Motor_DutyCycle_EXTRA2(0);
+        	 digitalWrite("PE07" , 0);
+        	 HAL_UART_IRQHandler(&huart2);
          }
 	    PastTime = uwTick;
 	  }
