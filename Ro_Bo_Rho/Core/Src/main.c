@@ -118,18 +118,11 @@ uint8_t addr;
 float Deg = 0;
 
 uint32_t last_uart_data_time = 0;
-#define UART_TIMEOUT_MS 500
+#define UART_TIMEOUT_MS 1000
 uint8_t uart_resetting = 0;
 long PastTime = 0;
 
 float PID[6] = { 0 };
-
-typedef struct {
-    uint8_t move[4];
-    uint8_t attack[8];
-    uint8_t seting[2];
-    uint8_t stickValues[4];
-}ControllerData;
 
 ControllerData Str_PS2;
 
@@ -234,120 +227,126 @@ int main(void)
 //	  CDC_Transmit_FS((uint8_t*)RPM ,6);
 //	  HAL_Delay(1000);
 
-	  if ((uwTick - PastTime) > 10){
-		  PastTime = uwTick;
+	  if ((uwTick - PastTime) > 10) {
+	    PastTime = uwTick;
 
-	      if (((uwTick - last_uart_data_time) < UART_TIMEOUT_MS) && (Str_PS2.seting[1] == 1)){
-	          digitalWrite("PE07", 1);
-	   	      Str_PS2.seting[1] = 0;
-	     }else{
-	   	 // ถ้า UART ไม่มีข้อมูลเกินเวลาที่กำหนด และยังไม่รีเซ็ต
-	   	 if (!uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)){
-	   	    uart_resetting = 1;  // ตั้ง flag เพื่อป้องกัน reset ซ้ำซ้อน
+	    if (((uwTick - last_uart_data_time) < UART_TIMEOUT_MS) && (Str_PS2.Header[0] == 'R') && (Str_PS2.Header[1] == 'B')) {
+	      digitalWrite("PE07", 1);
 
-	   	    HAL_UART_DeInit(&huart2);     // ปิด UART
-	   	    HAL_Delay(10);                // หน่วงนิดนึง
-	   	    MX_USART2_UART_Init();        // เรียกฟังก์ชัน init ใหม่ (สร้างจาก STM32CubeMX)
+	      Str_PS2.Header[0] = 0;
+	      Str_PS2.Header[1] = 0;
+	    } else {
+	      // ถ้า UART ไม่มีข้อมูลเกินเวลาที่กำหนด และยังไม่รีเซ็ต
+	      if (!uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)) {
+	        uart_resetting = 1;  // ตั้ง flag เพื่อป้องกัน reset ซ้ำซ้อน
 
-	   	    HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
+	        HAL_UART_DeInit(&huart2);  // ปิด UART
+	        HAL_Delay(10);             // หน่วงนิดนึง
+	        MX_USART2_UART_Init();     // เรียกฟังก์ชัน init ใหม่ (สร้างจาก STM32CubeMX)
 
-	   	    memset(Str_PS2.move, 0, 4);
-	   	 	memset(Str_PS2.attack, 0, 8);
-	   	 	memset(Str_PS2.seting, 0, 2);
-	   	 	memset(Str_PS2.stickValues, 128, 4);
+	        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
 
-	   	    digitalWrite("PE07", 0);
+//	        memset(Str_PS2.move, 0, 4);
+//	        memset(Str_PS2.attack, 0, 8);
+//	        memset(Str_PS2.seting, 0, 2);
+//	        memset(Str_PS2.stickValue, 0, 4);
+
+	        digitalWrite("PE07", 0);
 	      }
-	   	      // หยุดมอเตอร์เพื่อความปลอดภัย
-	   	      Motor_DutyCycle_LF(0);
-	   	      Motor_DutyCycle_LB(0);
-	   	      Motor_DutyCycle_RF(0);
-	   	      Motor_DutyCycle_RB(0);
-	   	      Motor_DutyCycle_EXTRA1(0);
-	   	      Motor_DutyCycle_EXTRA2(0);
-	   }
+	      // หยุดมอเตอร์เพื่อความปลอดภัย
+	      Motor_DutyCycle_LF(0);
+	      Motor_DutyCycle_LB(0);
+	      Motor_DutyCycle_RF(0);
+	      Motor_DutyCycle_RB(0);
+	      Motor_DutyCycle_EXTRA1(0);
+	      Motor_DutyCycle_EXTRA2(0);
+	    }
 
-	      Vx = map(Str_PS2.stickValues[1], 0.0f, 255.0f, 2.0f, -2.0f);
-	      Vy = map(Str_PS2.stickValues[0], 0.0f, 255.0f, 2.0f, -2.0f);
-	      Vz = map(Str_PS2.stickValues[3], 0.0f, 255.0f, 4.0f, -4.0f);
+//	    Vx = map(Str_PS2.stickValue[1], 0.0f, 255.0f, 2.0f, -2.0f);
+//	    Vy = map(Str_PS2.stickValue[0], 0.0f, 255.0f, 2.0f, -2.0f);
+//	    Vz = map(Str_PS2.stickValue[3], 0.0f, 255.0f, 4.0f, -4.0f);
 
-	      		  //		 addr = Scan_I2C(&hi2c2);
+	    Vx = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.0f, -2.0f);
+	    Vy = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.0f, -2.0f);
+	    Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
 
-	      		  //		 ReadMPU6050();
-	      		  //		 app_ros_comm_runner();
-	      		  //		 app_ros_comm_txPoll();
+	    // addr = Scan_I2C(&hi2c2);
 
-	      		  //		 Deg = getDegreeZ();
+	    // ReadMPU6050();
+	    // app_ros_comm_runner();
+	    // app_ros_comm_txPoll();
 
-
-	      		  //	     Motor_DutyCycle_LF(1000);
-	      		  //		 Motor_DutyCycle_LB(-2000);
-	      		  //		 Motor_DutyCycle_RF(-2000);
-	      		  //		 Motor_DutyCycle_RB(-2000);
-	      		  //	     Motor_DutyCycle_EXTRA1(4000);
-	      		  //	     Motor_DutyCycle_EXTRA2(-4000);
-
-	      		  //	    count[0] = getCount(&htim5);
-	      		  //	    count[1] = getCount(&htim1);
-	      		  //	    count[2] = getCount(&htim8);
-	      		  //	    count[3] = getCount(&htim4);
-	      		  //	    count[4] = getCount(&htim2);
-	      		  //	    count[5] = getCount(&htim3);
-
-	      	RPM[0] = getRPM_TIM_Wheel(&htim5 ,LF);
-	      	RPM[1] = -getRPM_TIM_Wheel(&htim1 ,LB);
-	      	RPM[2] = getRPM_TIM_Wheel(&htim8 ,RF);
-	      	RPM[3] = getRPM_TIM_Wheel(&htim4 ,RB);
-
-	      		  //	    RPM[4] = getRPM_TIM_Wheel(&htim3 ,EXTRA1);
-	      		  //	    RPM[5] = getRPM_TIM_Wheel(&htim2 ,EXTRA2);
-
-	      		  //		Odometry_Forward_Kinematic(getRPM_to_Rad_s(RPM[0]), getRPM_to_Rad_s(RPM[1]), getRPM_to_Rad_s(RPM[2]), getRPM_to_Rad_s(RPM[3]));
-	      		  //		x = get_Vz();
-
-	      	Inverse_Kinematic(Vx ,Vy ,Vz);
-
-	      	PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()) ,RPM[0]);
-	      	PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()) ,RPM[1]);
-	      	PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()) ,RPM[2]);
-	      	PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()) ,RPM[3]);
-
-	      	//	    PID[0] = Motor_Speed_LF(-180 ,RPM[0]);
-	      	//	    PID[1] = Motor_Speed_LB(-180 ,RPM[1]);
-	      	//	    PID[2] = Motor_Speed_RF(-180 ,RPM[2]);
-	      	//	    PID[3] = Motor_Speed_RB(-180 ,RPM[3]);
+	    // Deg = getDegreeZ();
 
 
-	      	if ((Str_PS2.attack[2] == 1) && (lastButtonState_load_Ball == 0)) {
-	      	   status_load_Ball = !status_load_Ball;
-	      	   digitalWrite("PE10", status_load_Ball);
-	      	}
-	      	lastButtonState_load_Ball = Str_PS2.attack[2];
+	    // Motor_DutyCycle_LF(1000);
+	    // Motor_DutyCycle_LB(-2000);
+	    // Motor_DutyCycle_RF(-2000);
+	    // Motor_DutyCycle_RB(-2000);
+	    // Motor_DutyCycle_EXTRA1(4000);
+	    // Motor_DutyCycle_EXTRA2(-4000);
 
-	      	if ((Str_PS2.attack[1] == 1) && (lastButtonState_re_Ball == 0)) {
-	      		status_re_Ball = !status_re_Ball;
-	      		digitalWrite("PE08", status_re_Ball);
-	      	}
-	      	lastButtonState_re_Ball = Str_PS2.attack[1];
+	    // count[0] = getCount(&htim5);
+	    // count[1] = getCount(&htim1);
+	    // count[2] = getCount(&htim8);
+	    // count[3] = getCount(&htim4);
+	    // count[4] = getCount(&htim2);
+	    // count[5] = getCount(&htim3);
+
+	    RPM[0] = getRPM_TIM_Wheel(&htim5, LF);
+	    RPM[1] = -getRPM_TIM_Wheel(&htim1, LB);
+	    RPM[2] = getRPM_TIM_Wheel(&htim8, RF);
+	    RPM[3] = getRPM_TIM_Wheel(&htim4, RB);
+
+	    // RPM[4] = getRPM_TIM_Wheel(&htim3, EXTRA1);
+	    // RPM[5] = getRPM_TIM_Wheel(&htim2, EXTRA2);
+
+	    // Odometry_Forward_Kinematic(getRPM_to_Rad_s(RPM[0]), getRPM_to_Rad_s(RPM[1]), getRPM_to_Rad_s(RPM[2]), getRPM_to_Rad_s(RPM[3]));
+	    // x = get_Vz();
+
+	    Inverse_Kinematic(Vx, Vy, Vz);
+
+	    PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()), RPM[0]);
+	    PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()), RPM[1]);
+	    PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()), RPM[2]);
+	    PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()), RPM[3]);
+
+	    // PID[0] = Motor_Speed_LF(-180, RPM[0]);
+	    // PID[1] = Motor_Speed_LB(-180, RPM[1]);
+	    // PID[2] = Motor_Speed_RF(-180, RPM[2]);
+	    // PID[3] = Motor_Speed_RB(-180, RPM[3]);
 
 
-	      	if(Str_PS2.attack[5] == 1){
-	      		Motor_DutyCycle_EXTRA1(-2000);
-	      	}else if(Str_PS2.attack[7] == 1){
-	      		Motor_DutyCycle_EXTRA1(2000);
-	      	}else{
-	      		Motor_DutyCycle_EXTRA1(0);
-	      	}
+	    // if ((Str_PS2.attack[2] == 1) && (lastButtonState_load_Ball == 0)) {
+	    //   status_load_Ball = !status_load_Ball;
+	    //   digitalWrite("PE10", status_load_Ball);
+	    // }
+	    // lastButtonState_load_Ball = Str_PS2.attack[2];
+
+	    // if ((Str_PS2.attack[1] == 1) && (lastButtonState_re_Ball == 0)) {
+	    //   status_re_Ball = !status_re_Ball;
+	    //   digitalWrite("PE08", status_re_Ball);
+	    // }
+	    // lastButtonState_re_Ball = Str_PS2.attack[1];
 
 
-	      	if(Str_PS2.attack[3] == 1){
-	      		Motor_DutyCycle_EXTRA2(4000);
-	      	}else if(Str_PS2.attack[0] == 1){
-	      		Motor_DutyCycle_EXTRA2(-4000);
-	      	}else{
-	      		Motor_DutyCycle_EXTRA2(0);
-	      	}
-	 }
+	    // if (Str_PS2.attack[5] == 1) {
+	    //   Motor_DutyCycle_EXTRA1(-2000);
+	    // } else if (Str_PS2.attack[7] == 1) {
+	    //   Motor_DutyCycle_EXTRA1(2000);
+	    // } else {
+	    //   Motor_DutyCycle_EXTRA1(0);
+	    // }
+
+
+	    // if (Str_PS2.attack[3] == 1) {
+	    //   Motor_DutyCycle_EXTRA2(4000);
+	    // } else if (Str_PS2.attack[0] == 1) {
+	    //   Motor_DutyCycle_EXTRA2(-4000);
+	    // } else {
+	    //   Motor_DutyCycle_EXTRA2(0);
+	    // }
+	  }
   }
 
   /* USER CODE END 3 */
@@ -1237,9 +1236,6 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	    uart_resetting = 0;  // กลับสู่สถานะปกติเมื่อมีข้อมูลเข้า
 	    HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
 	 }
-//	Vx = map(Joy[1], 0.0f, 255.0f, -128.0f, 127.0f);
-//	Vy = map(Joy[0], 0.0f, 255.0f, -128.0f, 127.0f);
-//	Vz = map(Joy[3], 0.0f, 255.0f, -128.0f, 127.0f);
 }
 /* USER CODE END 4 */
 
