@@ -20,27 +20,27 @@
 
 #define COMM_TIMEOUT_MS (40-1) // 40ms communication timeout
 
-typedef struct __attribute__((packed)){
+typedef struct __attribute__((packed)) {
   // Send by PC
   uint8_t rbcHeader[2];
 
-  union{
+  union {
     uint8_t reg;
-    struct{
-      uint8_t address   :5;
-      uint8_t type      :2;
-      uint8_t rw        :1;
-    }regBit;
+    struct {
+      uint8_t address : 5;
+      uint8_t type : 2;
+      uint8_t rw : 1;
+    } regBit;
   };
 
   uint8_t CTK;
 
-  struct{
+  struct {
     int16_t motor1_ctrl;
     int16_t motor2_ctrl;
     int16_t motor3_ctrl;
     int16_t motor4_ctrl;
-  }motorControl;
+  } motorControl;
 
   uint8_t cmdDataPC;
 
@@ -48,17 +48,17 @@ typedef struct __attribute__((packed)){
   uint8_t ajbHeader[2];
   uint8_t cmdDataMCU;
 
-  struct{
+  struct {
     int16_t motor1_fb;
     int16_t motor2_fb;
     int16_t motor3_fb;
     int16_t motor4_fb;
-  }motorFeedBack;
+  } motorFeedBack;
 
-  struct{
+  struct {
     int8_t mouse_x_vel;
     int8_t mouse_y_vel;
-  }mouseVel;
+  } mouseVel;
 
   int16_t gyro_x_raw;
   int16_t gyro_y_raw;
@@ -73,7 +73,7 @@ typedef struct __attribute__((packed)){
   int16_t acc_z_raw;
 
   uint8_t cks;
-}ros_rbc_ioPacket_t;
+} ros_rbc_ioPacket_t;
 
 
 extern ros_rbc_ioPacket_t  rbc_Packet_t;

@@ -66,6 +66,8 @@ typedef struct __attribute__((packed)){
   int8_t stickValue[4];  //joyL_X,joyL_Y ,joyR_X,joyR_Y
 
 } ControllerData;
+
+extern ControllerData Str_PS2;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/

@@ -106,6 +106,7 @@ static void MX_TIM5_Init(void);
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+//Motor_contro
 int16_t count[6] = { 0 }; //LF ,LB ,RF ,RB ,EXTRA1 ,EXTRA2
 
 int16_t RPM[6] = { 48 }; //LF ,LB ,RF ,RB ,EXTRA1 ,EXTRA2
@@ -124,17 +125,21 @@ long PastTime = 0;
 
 float PID[6] = { 0 };
 
+//Receiver_Joy
 ControllerData Str_PS2;
 
+//Receiver_ROS2
+//uint8_t *data = "Hello World from USB CDC\n";
+//uint8_t buffer[64];
+//ros_rbc_ioPacket_t  rbc_Packet_t;
+
+
+//Game_Play
 uint8_t status_load_Ball;
 uint8_t status_re_Ball;
 
 uint8_t lastButtonState_load_Ball = 0;
 uint8_t lastButtonState_re_Ball = 0;
-
-//uint8_t *data = "Hello World from USB CDC\n";
-//uint8_t buffer[64];
-//ros_rbc_ioPacket_t  rbc_Packet_t;
 
 /* USER CODE END 0 */
 
@@ -197,10 +202,10 @@ int main(void)
    Setup_CPR(68);
    Setup_frequency_Motor(100);
 
-   Setup_PID_LF(1.0 ,0.0 ,0.1 ,0 ,280);
-   Setup_PID_LB(1.0 ,0.0 ,0.1 ,0 ,280);
-   Setup_PID_RF(1.0 ,0.0 ,0.1 ,0 ,280);
-   Setup_PID_RB(1.0 ,0.0 ,0.1 ,0 ,280);
+   Setup_PID_LF(1.0 ,0.0 ,0.1 ,0 ,300);
+   Setup_PID_LB(1.0 ,0.0 ,0.1 ,0 ,300);
+   Setup_PID_RF(1.0 ,0.0 ,0.1 ,0 ,300);
+   Setup_PID_RB(1.0 ,0.0 ,0.1 ,0 ,300);
 //   Setup_PID_EXTRA1(0.5 ,0.1 ,0 ,0 ,280);
 //   Setup_PID_EXTRA2(0.5 ,0.1 ,0 ,0 ,280);
 
@@ -236,20 +241,16 @@ int main(void)
 	      Str_PS2.Header[0] = 0;
 	      Str_PS2.Header[1] = 0;
 	    } else {
-	      // ถ้า UART ไม่มีข้อมูลเกินเวลาที่กำหนด และยังไม่รีเซ็ต
 	      if (!uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)) {
 	        uart_resetting = 1;  // ตั้ง flag เพื่อป้องกัน reset ซ้ำซ้อน
 
-	        HAL_UART_DeInit(&huart2);  // ปิด UART
-	        HAL_Delay(10);             // หน่วงนิดนึง
-	        MX_USART2_UART_Init();     // เรียกฟังก์ชัน init ใหม่ (สร้างจาก STM32CubeMX)
+	        HAL_UART_DeInit(&huart2);
+	        HAL_Delay(10);
+	        MX_USART2_UART_Init();
 
 	        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
 
-//	        memset(Str_PS2.move, 0, 4);
-//	        memset(Str_PS2.attack, 0, 8);
-//	        memset(Str_PS2.seting, 0, 2);
-//	        memset(Str_PS2.stickValue, 0, 4);
+	        memset(&Str_PS2, 0, sizeof(Str_PS2));
 
 	        digitalWrite("PE07", 0);
 	      }
@@ -258,16 +259,13 @@ int main(void)
 	      Motor_DutyCycle_LB(0);
 	      Motor_DutyCycle_RF(0);
 	      Motor_DutyCycle_RB(0);
+
 	      Motor_DutyCycle_EXTRA1(0);
 	      Motor_DutyCycle_EXTRA2(0);
 	    }
 
-//	    Vx = map(Str_PS2.stickValue[1], 0.0f, 255.0f, 2.0f, -2.0f);
-//	    Vy = map(Str_PS2.stickValue[0], 0.0f, 255.0f, 2.0f, -2.0f);
-//	    Vz = map(Str_PS2.stickValue[3], 0.0f, 255.0f, 4.0f, -4.0f);
-
-	    Vx = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.0f, -2.0f);
-	    Vy = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.0f, -2.0f);
+	    Vx = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.3f, -2.3f);
+	    Vy = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.3f, -2.3f);
 	    Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
 
 	    // addr = Scan_I2C(&hi2c2);
