@@ -15,6 +15,8 @@
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal.h"
 
+#include "Ramp_Robot.h"
+
 //https://ecam-eurobot.github.io/Tutorials/mechanical/mecanum.html
 //inverse kinematic equations mecanum wheel
 
@@ -30,6 +32,7 @@ extern float w_RF;
 extern float w_RB;
 
 void Inverse_Kinematic(float Vx ,float Vy ,float wz);
+void Inverse_Kinematic_Lock_Direction(float Vx ,float Vy ,float wz ,float head_ing);
 
 float get_w_LF();
 float get_w_LB();

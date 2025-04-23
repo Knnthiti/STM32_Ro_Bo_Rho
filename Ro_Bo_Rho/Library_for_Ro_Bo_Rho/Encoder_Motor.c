@@ -151,7 +151,7 @@ void Setup_CPR(uint16_t _CPR){
 	CPR = _CPR;
 }
 
-uint16_t Gear_Ratio = 48;
+uint16_t Gear_Ratio = 27;
 
 void Setup_Gear_Ratio(uint16_t _Gear_Ratio){
 	Gear_Ratio = _Gear_Ratio;

@@ -1,6 +1,6 @@
 ../Library_for_Ro_Bo_Rho/MPU6050.c:11:9:Scan_I2C	3
 ../Library_for_Ro_Bo_Rho/MPU6050.c:26:6:Setup_MPU6050	1
 ../Library_for_Ro_Bo_Rho/MPU6050.c:56:6:ReadMPU6050	1
-../Library_for_Ro_Bo_Rho/MPU6050.c:93:6:MPU6050_calib	2
-../Library_for_Ro_Bo_Rho/MPU6050.c:111:7:getDegreeZ	1
-../Library_for_Ro_Bo_Rho/MPU6050.c:127:7:getRadianZ	1
+../Library_for_Ro_Bo_Rho/MPU6050.c:81:6:MPU6050_calib	2
+../Library_for_Ro_Bo_Rho/MPU6050.c:100:7:getDegreeZ	1
+../Library_for_Ro_Bo_Rho/MPU6050.c:117:7:getRadianZ	1

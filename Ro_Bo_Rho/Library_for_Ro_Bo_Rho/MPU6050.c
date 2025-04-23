@@ -12,7 +12,7 @@ uint8_t Scan_I2C(I2C_HandleTypeDef *I2Cinstance){
 	HAL_StatusTypeDef result;
 	for (uint8_t i = 1; i < 128; i++)
 	{
-	    result = HAL_I2C_IsDeviceReady(I2Cinstance, (uint16_t)(i<<1), 2, 100);
+	    result = HAL_I2C_IsDeviceReady(I2Cinstance, (uint16_t)(i << 1), 2, 100);
 	    if (result == HAL_OK){
 	        _addr = i;
 	    }
@@ -34,15 +34,15 @@ void Setup_MPU6050(I2C_HandleTypeDef *I2Cinstance){
 		Data = 0x07;
 		HAL_I2C_Mem_Write(I2C_MPU6050, MPU6050_ADDR, DATA_RATE, 1, &Data, 1, 2000);
 
-		Data = 0x03;
-		HAL_I2C_Mem_Write(I2C_MPU6050, MPU6050_ADDR, REG_DLPFCONF, 1, &Data, 1, 2000);
+//		Data = 0x03;
+//		HAL_I2C_Mem_Write(I2C_MPU6050, MPU6050_ADDR, REG_DLPFCONF, 1, &Data, 1, 2000);
 
 		// Set accelerometer configuration in ACCEL_CONFIG Register
-		Data = 18;  // XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> ± 2g
+		Data = 0x00;  // XA_ST=0,YA_ST=0,ZA_ST=0, FS_SEL=0 -> ± 2g
 		HAL_I2C_Mem_Write(I2C_MPU6050, MPU6050_ADDR, ACCEL_CONFIG_REG, 1, &Data, 1, 2000);
 
 		// Set Gyroscopic configuration in GYRO_CONFIG Register
-		Data = 18;  // XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> ± 250 ̐/s
+		Data = 0x00;  // XG_ST=0,YG_ST=0,ZG_ST=0, FS_SEL=0 -> ± 250 ̐/s
 		HAL_I2C_Mem_Write(I2C_MPU6050, MPU6050_ADDR, GYRO_CONFIG_REG, 1, &Data, 1, 2000);
 
 
@@ -72,20 +72,8 @@ void ReadMPU6050(){
 	imu_data.gy = (int16_t)(data[2] << 8 | data[3]);  // Y-axis gyroscope data
 	imu_data.gz = (int16_t)(data[4] << 8 | data[5]);  // Z-axis gyroscope data
 
-	imu_data.gz = imu_data.gz - gyro_offset;
+//	imu_data.gz = imu_data.gz - gyro_offset;
 }
-
-//int16_t get_gx(){
-//	return imu_data.gx;
-//}
-//
-//int16_t get_gy(){
-//	return imu_data.gy;
-//}
-//
-//int16_t get_gz(){
-//	return imu_data.gz;
-//}
 
 
 float gyro_raw = 0;
@@ -102,6 +90,7 @@ void MPU6050_calib(){
 //long currentTime = 0;
 //float dt_yak = 0.0f;
 //long lastTime = 0;
+
 #define freq_MPU6050 100
 
 float angularZ = 0.0f;
@@ -115,7 +104,8 @@ float getDegreeZ(){
 //	lastTime = currentTime;
 
 //	angularZ = ((float)(imu_data.gz - gyro_offset)) / 131.0f * dt_yak;
-	angularZ = ((float)(imu_data.gz) / (131.0f * freq_MPU6050));
+
+	angularZ = (((float)(imu_data.gz - gyro_offset)) / (131.0f * freq_MPU6050));
 
 	DegreeZ += angularZ;  //returns the absolute value of the z-axis rotazion integral
 

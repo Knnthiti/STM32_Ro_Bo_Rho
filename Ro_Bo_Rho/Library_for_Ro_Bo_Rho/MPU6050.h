@@ -32,6 +32,8 @@
 
 #define Degree_to_Radian 0.017453f
 
+#define ITG_TO_RAD    0.00121414f // (2000/28750 degree*s^-1/LSB) * 0.0174533 (rad/degree)
+
 uint8_t Scan_I2C(I2C_HandleTypeDef *I2Cinstance);
 
 void Setup_MPU6050(I2C_HandleTypeDef *I2Cinstance);

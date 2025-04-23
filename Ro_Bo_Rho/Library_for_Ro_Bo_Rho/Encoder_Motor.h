@@ -32,6 +32,8 @@ void Motor_setup_EXTRA1(TIM_HandleTypeDef *_TIM_9_CH1     ,TIM_HandleTypeDef *_T
 void Motor_setup_EXTRA2(TIM_HandleTypeDef *_TIM_10_CH1    ,TIM_HandleTypeDef *_TIM_3  ,char* _IN_EXTRA2);
 
 void Setup_CPR(uint16_t CPR);
+
+extern uint16_t Gear_Ratio;
 void Setup_Gear_Ratio(uint16_t _Gear_Ratio);
 
 void Motor_DutyCycle_LF(int16_t DutyCycle_LF);

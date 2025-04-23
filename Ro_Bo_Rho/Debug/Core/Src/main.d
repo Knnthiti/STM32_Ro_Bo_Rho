@@ -50,6 +50,7 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
  ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
  C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Inverse_Kinematics.h \
+ C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Ramp_Robot.h \
  C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Forward_Kinematics.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
@@ -103,4 +104,5 @@ C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Librar
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
 ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
 C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Inverse_Kinematics.h:
+C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Ramp_Robot.h:
 C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Forward_Kinematics.h:
