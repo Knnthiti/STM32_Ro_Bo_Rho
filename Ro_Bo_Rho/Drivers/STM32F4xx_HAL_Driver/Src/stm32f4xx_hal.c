@@ -388,7 +388,6 @@ HAL_TickFreqTypeDef HAL_GetTickFreq(void)
   * @retval None
   */
 __weak void HAL_Delay(uint32_t Delay)
-
 {
   uint32_t tickstart = HAL_GetTick();
   uint32_t wait = Delay;
