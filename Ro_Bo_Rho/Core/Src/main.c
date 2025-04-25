@@ -34,6 +34,8 @@
 
 #include "Forward_Kinematics.h"
 
+#include "Game_Play.h"
+
 //#include <Ramp_Robot.h>
 /* USER CODE END Includes */
 
@@ -121,6 +123,7 @@ float Rad = 0;
 uint32_t last_uart_data_time = 0;
 #define UART_TIMEOUT_MS 500
 uint8_t uart_resetting = 0;
+
 long PastTime = 0;
 
 float PID[6] = { 0 };
@@ -132,14 +135,7 @@ uint8_t joy_recv_fsm = 0;
 
 ControllerData Str_PS2;
 
-#define USE_ROS
-
-//Game_Play
-uint8_t status_load_Ball;
-uint8_t status_re_Ball;
-
-uint8_t lastButtonState_load_Ball = 0;
-uint8_t lastButtonState_re_Ball = 0;
+#define ROBOT_1
 
 /* USER CODE END 0 */
 
@@ -195,6 +191,7 @@ int main(void)
    Motor_setup_LB(&htim12   ,&htim1    ,"PE12");
    Motor_setup_RF(&htim11   ,&htim8    ,"PE01");
    Motor_setup_RB(&htim12   ,&htim4    ,"PD09");
+
    Motor_setup_EXTRA1(&htim9,&htim3    ,"PC13");
    Motor_setup_EXTRA2(&htim10,&htim2   ,"PE00");
 
@@ -206,6 +203,7 @@ int main(void)
    Setup_PID_LB(0.8 ,0.0 ,0.1 ,0 ,300);
    Setup_PID_RF(0.8 ,0.0 ,0.1 ,0 ,300);
    Setup_PID_RB(0.8 ,0.0 ,0.1 ,0 ,300);
+
 //   Setup_PID_EXTRA1(0.5 ,0.1 ,0 ,0 ,280);
 //   Setup_PID_EXTRA2(0.5 ,0.1 ,0 ,0 ,280);
 
@@ -215,9 +213,11 @@ int main(void)
    Setup_Inverse_Kinematic(0.23f ,0.23f ,0.06f);
 
    //UAST2 esp_s3_zero to STM32
-   HAL_UART_Receive_IT(&huart2, (uint8_t *)&temp_buffer, 1);
+//   HAL_UART_Receive_IT(&huart2, (uint8_t *)&temp_buffer, 1);
 
-//   Setup_MPU6050(&hi2c2);
+   HAL_UART_Receive_IT(&huart2, (uint8_t*)&Str_PS2, sizeof(Str_PS2));
+
+   Setup_MPU6050(&hi2c2);
 
   /* USER CODE END 2 */
 
@@ -232,37 +232,62 @@ int main(void)
 	  if ((uwTick - PastTime) > 10) {
 	    PastTime = uwTick;
 
-//	    if (((uwTick - last_uart_data_time) < UART_TIMEOUT_MS) && (Str_PS2.Header[0] == 'R') && (Str_PS2.Header[1] == 'B')) {
-//	      digitalWrite("PE08", 1);
-//
-//	      Str_PS2.Header[0] = 0;
-//	      Str_PS2.Header[1] = 0;
-//	    } else {
-//	      if (!uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)) {
-//	        uart_resetting = 1;  // ตั้ง flag เพื่อป้อง�?ัน reset ซ้ำซ้อน
+//	    if (uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)) {
+//	        uart_resetting = 0;  // เคลียร์ flag
 //
 //	        HAL_UART_DeInit(&huart2);
 //	        HAL_Delay(10);
 //	        MX_USART2_UART_Init();
-//
-//	        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
+//	        HAL_UART_Receive_IT(&huart2, (uint8_t*) &temp_buffer, 1);
 //
 //	        memset(&Str_PS2, 0, sizeof(Str_PS2));
+//	        joy_recv_fsm = 0;
+//	        cpy_pointer = 0;
 //
-//	        digitalWrite("PE08", 0);
-//	      }
-//	      // หยุดมอเตอร์เพื่อความปลอดภัย
-//	      Motor_DutyCycle_LF(0);
-//	      Motor_DutyCycle_LB(0);
-//	      Motor_DutyCycle_RF(0);
-//	      Motor_DutyCycle_RB(0);
+//	        // หยุดมอเตอร์
+//	        Motor_DutyCycle_LF(0);
+//	        Motor_DutyCycle_LB(0);
+//	        Motor_DutyCycle_RF(0);
+//	        Motor_DutyCycle_RB(0);
+//	        Motor_DutyCycle_EXTRA1(0);
+//	        Motor_DutyCycle_EXTRA2(0);
 //
-//	      Motor_DutyCycle_EXTRA1(0);
-//	      Motor_DutyCycle_EXTRA2(0);
+//	        digitalWrite("PE08", 0);  // LED OFF
+//	    }else{
+//	    	digitalWrite("PE08", 1);  // LED ON
 //	    }
 
+	    if (((uwTick - last_uart_data_time) < UART_TIMEOUT_MS) && (Str_PS2.Header[0] == 'R') && (Str_PS2.Header[1] == 'B')) {
+	    	      digitalWrite("PE15", 1);
+
+	    	      Str_PS2.Header[0] = 0;
+	    	      Str_PS2.Header[1] = 0;
+	    	    } else {
+	    	      if (!uart_resetting && ((uwTick - last_uart_data_time) > UART_TIMEOUT_MS)) {
+	    	        uart_resetting = 1;  // ตั้ง flag เพื่อป้อง�?ัน reset ซ้ำซ้อน
+
+	    	        HAL_UART_DeInit(&huart2);
+	    	        HAL_Delay(10);
+	    	        MX_USART2_UART_Init();
+
+	    	        HAL_UART_Receive_IT(&huart2, (uint8_t *)&Str_PS2, sizeof(Str_PS2));
+//	    	        HAL_UART_Receive_IT(&huart2, (uint8_t *)&temp_buffer, 1);
+
+	    	        memset(&Str_PS2, 0, sizeof(Str_PS2));
+
+	    	        digitalWrite("PE15", 0);
+	    	      }
+	    	      // หยุดมอเตอร์เพื่อความปลอดภัย
+	    	      Motor_DutyCycle_LF(0);
+	    	      Motor_DutyCycle_LB(0);
+	    	      Motor_DutyCycle_RF(0);
+	    	      Motor_DutyCycle_RB(0);
+
+	    	      Motor_DutyCycle_EXTRA1(0);
+	    	      Motor_DutyCycle_EXTRA2(0);
+	    }
 //	    addr = Scan_I2C(&hi2c2);
-//	    ReadMPU6050();
+	    ReadMPU6050();
 //	    Rad = getDegreeZ();
 //	    Rad = getRadianZ();
 
@@ -291,67 +316,49 @@ int main(void)
 
 	    // Odometry_Forward_Kinematic(getRPM_to_Rad_s(RPM[0]), getRPM_to_Rad_s(RPM[1]), getRPM_to_Rad_s(RPM[2]), getRPM_to_Rad_s(RPM[3]));
 	    // x = get_Vz();
-#ifdef USE_ROS
-	    app_ros_comm_runner();
+#ifdef ROBOT_1
+        if(Str_PS2.attackBtnBit.attack1 == 1){
+        	app_ros_comm_runner();
 
-	    PID[0] = Motor_Speed_LF((motor_cmdvel_ptr_t.v1/Gear_Ratio), RPM[0]);
-	    PID[1] = Motor_Speed_LB((motor_cmdvel_ptr_t.v2/Gear_Ratio), RPM[1]);
-	    PID[2] = Motor_Speed_RF((motor_cmdvel_ptr_t.v4/Gear_Ratio), RPM[2]);
-	    PID[3] = Motor_Speed_RB((motor_cmdvel_ptr_t.v3/Gear_Ratio), RPM[3]);
+        	PID[0] = Motor_Speed_LF((motor_cmdvel_ptr_t.v1/Gear_Ratio), RPM[0]);
+        	PID[1] = Motor_Speed_LB((motor_cmdvel_ptr_t.v2/Gear_Ratio), RPM[1]);
+        	PID[2] = Motor_Speed_RF((motor_cmdvel_ptr_t.v4/Gear_Ratio), RPM[2]);
+        	PID[3] = Motor_Speed_RB((motor_cmdvel_ptr_t.v3/Gear_Ratio), RPM[3]);
+        }else{
+        	Vx = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.3f, -2.3f);
+        	Vy = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.3f, -2.3f);
+        	Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
 
-//	    PID[0] = Motor_Speed_LF(rbc_Packet_t.motorControl.motor1_ctrl, RPM[0]);
-//	    PID[1] = Motor_Speed_LB(rbc_Packet_t.motorControl.motor2_ctrl, RPM[1]);
-//	    PID[2] = Motor_Speed_RF(rbc_Packet_t.motorControl.motor4_ctrl, RPM[2]);
-//	    PID[3] = Motor_Speed_RB(rbc_Packet_t.motorControl.motor3_ctrl, RPM[3]);
+        	//	    Inverse_Kinematic(Vx, Vy, Vz);
+        	Inverse_Kinematic_Lock_Direction(Vx ,Vy ,Vz ,Rad);
+
+        	PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()), RPM[0]);
+        	PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()), RPM[1]);
+        	PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()), RPM[2]);
+        	PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()), RPM[3]);
+        }
+
+        Game_Play_ROBOT_1();
 #else
-	    Vx = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.3f, -2.3f);
-	    Vy = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.3f, -2.3f);
-	    Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
+        Vx = map(Str_PS2.stickValue[0], 100.0f, -100.0f, 2.3f, -2.3f);
+        Vy = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.3f, -2.3f);
+        Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
 
-//	    Inverse_Kinematic(Vx, Vy, Vz);
-	    Inverse_Kinematic_Lock_Direction(Vx ,Vy ,Vz ,Rad);
+                	//	    Inverse_Kinematic(Vx, Vy, Vz);
+        Inverse_Kinematic_Lock_Direction(Vx ,Vy ,Vz ,Rad);
 
-	    PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()), RPM[0]);
-	    PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()), RPM[1]);
-	    PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()), RPM[2]);
-	    PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()), RPM[3]);
+        PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()), RPM[0]);
+        PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()), RPM[1]);
+        PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()), RPM[2]);
+        PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()), RPM[3]);
+
+        Game_Play_ROBOT_2();
 #endif
 
-	    // PID[0] = Motor_Speed_LF(-180, RPM[0]);
-	    // PID[1] = Motor_Speed_LB(-180, RPM[1]);
-	    // PID[2] = Motor_Speed_RF(-180, RPM[2]);
-	    // PID[3] = Motor_Speed_RB(-180, RPM[3]);
-
-
-	    // if ((Str_PS2.attack[2] == 1) && (lastButtonState_load_Ball == 0)) {
-	    //   status_load_Ball = !status_load_Ball;
-	    //   digitalWrite("PE10", status_load_Ball);
-	    // }
-	    // lastButtonState_load_Ball = Str_PS2.attack[2];
-
-	    // if ((Str_PS2.attack[1] == 1) && (lastButtonState_re_Ball == 0)) {
-	    //   status_re_Ball = !status_re_Ball;
-	    //   digitalWrite("PE08", status_re_Ball);
-	    // }
-	    // lastButtonState_re_Ball = Str_PS2.attack[1];
-
-
-	    // if (Str_PS2.attack[5] == 1) {
-	    //   Motor_DutyCycle_EXTRA1(-2000);
-	    // } else if (Str_PS2.attack[7] == 1) {
-	    //   Motor_DutyCycle_EXTRA1(2000);
-	    // } else {
-	    //   Motor_DutyCycle_EXTRA1(0);
-	    // }
-
-
-	    // if (Str_PS2.attack[3] == 1) {
-	    //   Motor_DutyCycle_EXTRA2(4000);
-	    // } else if (Str_PS2.attack[0] == 1) {
-	    //   Motor_DutyCycle_EXTRA2(-4000);
-	    // } else {
-	    //   Motor_DutyCycle_EXTRA2(0);
-	    // }
+//	     PID[0] = Motor_Speed_LF(180, RPM[0]);
+//	     PID[1] = Motor_Speed_LB(180, RPM[1]);
+//	     PID[2] = Motor_Speed_RF(180, RPM[2]);
+//	     PID[3] = Motor_Speed_RB(180, RPM[3]);
 	  }
   }
 
@@ -1235,45 +1242,61 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-	if (huart->Instance == USART2) {
-		last_uart_data_time = uwTick;
-		uart_resetting = 0;
+//void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
+//    if (huart->Instance == USART2) {
+//    	last_uart_data_time = uwTick;
+//        switch (joy_recv_fsm) {
+//        case 0:
+//            if (temp_buffer == 'R') {
+//                Str_PS2.Header[0] = 'R';
+//                joy_recv_fsm = 1;
+//            } else {
+//                // ข้อมูลไม่ถูกต้อง => reset FSM
+//                joy_recv_fsm = 0;
+//                cpy_pointer = 0;
+//                uart_resetting = 1;
+//                Str_PS2.Header[0] = 0;
+//                Str_PS2.Header[1] = 0;
+//            }
+//            break;
+//
+//        case 1:
+//            if (temp_buffer == 'B') {
+//                Str_PS2.Header[1] = 'B';
+//                joy_recv_fsm = 2;
+//            } else {
+//                // ผิดลำดับ => reset
+//                joy_recv_fsm = 0;
+//                cpy_pointer = 0;
+//                uart_resetting = 1;
+//                Str_PS2.Header[0] = 0;
+//                Str_PS2.Header[1] = 0;
+//            }
+//            break;
+//
+//        case 2:
+//            *((uint8_t*) &Str_PS2.moveBtnByte + cpy_pointer) = temp_buffer;
+//            cpy_pointer++;
+//            if (cpy_pointer > 7) {
+//            	uart_resetting = 0;
+//                cpy_pointer = 0;
+//                joy_recv_fsm = 0;
+//            }
+//            break;
+//        }
+//
+//        // รอข้อมูลตัวถัดไป
+//        HAL_UART_Receive_IT(&huart2, (uint8_t*) &temp_buffer, 1);
+//    }
+//}
 
-		// Check for RB header
-		switch (joy_recv_fsm) {
-		case 0:
-			// Check for 'R'
-			if (temp_buffer == 'R') {
-				Str_PS2.Header[0] = 'R';
-				joy_recv_fsm = 1;
-			}
-
-			break;
-
-		case 1:
-			// Check for 'B'
-			if (temp_buffer == 'B') {
-				Str_PS2.Header[1] = 'B';
-				joy_recv_fsm = 2;
-			}
-
-			break;
-
-		case 2:
-			// Copy other bytes
-			*((uint8_t*) &Str_PS2.attackBtnByte + cpy_pointer) = temp_buffer;
-			cpy_pointer++;
-			if (cpy_pointer > 6) {
-				cpy_pointer = 0;
-				joy_recv_fsm = 0;
-			}
-
-			break;
-		}
-
-		HAL_UART_Receive_IT(&huart2, (uint8_t*) &temp_buffer, 1);
-	}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
+{
+     if (huart->Instance == USART2){
+        last_uart_data_time = uwTick;
+        uart_resetting = 0;
+        HAL_UART_Receive_IT(&huart2, (uint8_t*)&Str_PS2, sizeof(Str_PS2));
+     }
 }
 /* USER CODE END 4 */
 

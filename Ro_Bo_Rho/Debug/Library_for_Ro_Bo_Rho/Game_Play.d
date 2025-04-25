@@ -1,4 +1,5 @@
-Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
+Library_for_Ro_Bo_Rho/Game_Play.o: ../Library_for_Ro_Bo_Rho/Game_Play.c \
+ ../Library_for_Ro_Bo_Rho/Game_Play.h ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h \
  ../Core/Inc/stm32f4xx_hal_conf.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_rcc.h \
@@ -36,23 +37,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h \
- ../USB_DEVICE/App/usb_device.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
- ../USB_DEVICE/Target/usbd_conf.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/app_ros_comm.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Encoder_Motor.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/MPU6050.h \
- ../USB_DEVICE/App/usbd_cdc_if.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h \
- ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Inverse_Kinematics.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Ramp_Robot.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Forward_Kinematics.h \
- C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Game_Play.h
+ ../Library_for_Ro_Bo_Rho/Encoder_Motor.h
+../Library_for_Ro_Bo_Rho/Game_Play.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h:
 ../Core/Inc/stm32f4xx_hal_conf.h:
@@ -91,20 +77,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_ll_usb.h:
 ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_pcd_ex.h:
-../USB_DEVICE/App/usb_device.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
-../USB_DEVICE/Target/usbd_conf.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/app_ros_comm.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Encoder_Motor.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/MPU6050.h:
-../USB_DEVICE/App/usbd_cdc_if.h:
-../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_def.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_core.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h:
-../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Inverse_Kinematics.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Ramp_Robot.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Forward_Kinematics.h:
-C:/Users/Knnn/STM32CubeIDE/workspace_1.15.1/mark_1.zip_expanded/Ro_Bo_Rho/Library_for_Ro_Bo_Rho/Game_Play.h:
+../Library_for_Ro_Bo_Rho/Encoder_Motor.h:

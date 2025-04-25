@@ -32,6 +32,7 @@
 "./Drivers/STM32F4xx_HAL_Driver/Src/stm32f4xx_ll_usb.o"
 "./Library_for_Ro_Bo_Rho/Encoder_Motor.o"
 "./Library_for_Ro_Bo_Rho/Forward_Kinematics.o"
+"./Library_for_Ro_Bo_Rho/Game_Play.o"
 "./Library_for_Ro_Bo_Rho/Inverse_Kinematics.o"
 "./Library_for_Ro_Bo_Rho/MPU6050.o"
 "./Library_for_Ro_Bo_Rho/Ramp_Robot.o"
