@@ -351,7 +351,7 @@ int main(void)
 //        Motor_DutyCycle_RF(map(getRad_s_to_RPM(get_w_RF()), -300, 300, -4095, 4095));
 //        Motor_DutyCycle_RB(map(getRad_s_to_RPM(get_w_RB()), -300, 300, -4095, 4095));
 //
-        Game_Play_ROBOT_2(&htim9);
+//        Game_Play_ROBOT_2(&htim9);
 #endif
 //			digitalWrite("PE10", 0);
 //			digitalWrite("PE08", 1);
