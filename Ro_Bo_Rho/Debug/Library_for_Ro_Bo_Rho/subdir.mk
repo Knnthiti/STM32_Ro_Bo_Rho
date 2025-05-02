@@ -7,6 +7,7 @@
 C_SRCS += \
 ../Library_for_Ro_Bo_Rho/Encoder_Motor.c \
 ../Library_for_Ro_Bo_Rho/Forward_Kinematics.c \
+../Library_for_Ro_Bo_Rho/Game_Play.c \
 ../Library_for_Ro_Bo_Rho/Inverse_Kinematics.c \
 ../Library_for_Ro_Bo_Rho/MPU6050.c \
 ../Library_for_Ro_Bo_Rho/Ramp_Robot.c \
@@ -15,6 +16,7 @@ C_SRCS += \
 OBJS += \
 ./Library_for_Ro_Bo_Rho/Encoder_Motor.o \
 ./Library_for_Ro_Bo_Rho/Forward_Kinematics.o \
+./Library_for_Ro_Bo_Rho/Game_Play.o \
 ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.o \
 ./Library_for_Ro_Bo_Rho/MPU6050.o \
 ./Library_for_Ro_Bo_Rho/Ramp_Robot.o \
@@ -23,6 +25,7 @@ OBJS += \
 C_DEPS += \
 ./Library_for_Ro_Bo_Rho/Encoder_Motor.d \
 ./Library_for_Ro_Bo_Rho/Forward_Kinematics.d \
+./Library_for_Ro_Bo_Rho/Game_Play.d \
 ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.d \
 ./Library_for_Ro_Bo_Rho/MPU6050.d \
 ./Library_for_Ro_Bo_Rho/Ramp_Robot.d \
@@ -36,7 +39,7 @@ Library_for_Ro_Bo_Rho/%.o Library_for_Ro_Bo_Rho/%.su Library_for_Ro_Bo_Rho/%.cyc
 clean: clean-Library_for_Ro_Bo_Rho
 
 clean-Library_for_Ro_Bo_Rho:
-	-$(RM) ./Library_for_Ro_Bo_Rho/Encoder_Motor.cyclo ./Library_for_Ro_Bo_Rho/Encoder_Motor.d ./Library_for_Ro_Bo_Rho/Encoder_Motor.o ./Library_for_Ro_Bo_Rho/Encoder_Motor.su ./Library_for_Ro_Bo_Rho/Forward_Kinematics.cyclo ./Library_for_Ro_Bo_Rho/Forward_Kinematics.d ./Library_for_Ro_Bo_Rho/Forward_Kinematics.o ./Library_for_Ro_Bo_Rho/Forward_Kinematics.su ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.cyclo ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.d ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.o ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.su ./Library_for_Ro_Bo_Rho/MPU6050.cyclo ./Library_for_Ro_Bo_Rho/MPU6050.d ./Library_for_Ro_Bo_Rho/MPU6050.o ./Library_for_Ro_Bo_Rho/MPU6050.su ./Library_for_Ro_Bo_Rho/Ramp_Robot.cyclo ./Library_for_Ro_Bo_Rho/Ramp_Robot.d ./Library_for_Ro_Bo_Rho/Ramp_Robot.o ./Library_for_Ro_Bo_Rho/Ramp_Robot.su ./Library_for_Ro_Bo_Rho/app_ros_comm.cyclo ./Library_for_Ro_Bo_Rho/app_ros_comm.d ./Library_for_Ro_Bo_Rho/app_ros_comm.o ./Library_for_Ro_Bo_Rho/app_ros_comm.su
+	-$(RM) ./Library_for_Ro_Bo_Rho/Encoder_Motor.cyclo ./Library_for_Ro_Bo_Rho/Encoder_Motor.d ./Library_for_Ro_Bo_Rho/Encoder_Motor.o ./Library_for_Ro_Bo_Rho/Encoder_Motor.su ./Library_for_Ro_Bo_Rho/Forward_Kinematics.cyclo ./Library_for_Ro_Bo_Rho/Forward_Kinematics.d ./Library_for_Ro_Bo_Rho/Forward_Kinematics.o ./Library_for_Ro_Bo_Rho/Forward_Kinematics.su ./Library_for_Ro_Bo_Rho/Game_Play.cyclo ./Library_for_Ro_Bo_Rho/Game_Play.d ./Library_for_Ro_Bo_Rho/Game_Play.o ./Library_for_Ro_Bo_Rho/Game_Play.su ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.cyclo ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.d ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.o ./Library_for_Ro_Bo_Rho/Inverse_Kinematics.su ./Library_for_Ro_Bo_Rho/MPU6050.cyclo ./Library_for_Ro_Bo_Rho/MPU6050.d ./Library_for_Ro_Bo_Rho/MPU6050.o ./Library_for_Ro_Bo_Rho/MPU6050.su ./Library_for_Ro_Bo_Rho/Ramp_Robot.cyclo ./Library_for_Ro_Bo_Rho/Ramp_Robot.d ./Library_for_Ro_Bo_Rho/Ramp_Robot.o ./Library_for_Ro_Bo_Rho/Ramp_Robot.su ./Library_for_Ro_Bo_Rho/app_ros_comm.cyclo ./Library_for_Ro_Bo_Rho/app_ros_comm.d ./Library_for_Ro_Bo_Rho/app_ros_comm.o ./Library_for_Ro_Bo_Rho/app_ros_comm.su
 
 .PHONY: clean-Library_for_Ro_Bo_Rho
 
