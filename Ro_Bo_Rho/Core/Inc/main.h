@@ -94,10 +94,6 @@ void Error_Handler(void);
 #define CE_1_GPIO_Port GPIOE
 #define CE_2_Pin GPIO_PIN_3
 #define CE_2_GPIO_Port GPIOE
-#define EXTRA1_PWM_L_Pin GPIO_PIN_5
-#define EXTRA1_PWM_L_GPIO_Port GPIOE
-#define SERVO_1_Pin GPIO_PIN_6
-#define SERVO_1_GPIO_Port GPIOE
 #define EXTRA1_DIGI_R_Pin GPIO_PIN_13
 #define EXTRA1_DIGI_R_GPIO_Port GPIOC
 #define SERVO_2_Pin GPIO_PIN_6

@@ -135,7 +135,7 @@ uint8_t joy_recv_fsm = 0;
 
 ControllerData Str_PS2;
 
-#define ROBOT_1
+//#define ROBOT_1
 
 /* USER CODE END 0 */
 
@@ -192,6 +192,8 @@ int main(void)
    Motor_setup_RF(&htim11   ,&htim8    ,"PE01");
    Motor_setup_RB(&htim12   ,&htim4    ,"PD09");
 
+   HAL_TIMEx_PWMN_Start(&htim9, TIM_CHANNEL_2);
+
    Motor_setup_EXTRA1(&htim9,&htim3    ,"PC13");
    Motor_setup_EXTRA2(&htim10,&htim2   ,"PE00");
 
@@ -199,10 +201,10 @@ int main(void)
    Setup_CPR(68);
    Setup_frequency_Motor(100);
 
-   Setup_PID_LF(0.8 ,0.0 ,0.1 ,0 ,300);
-   Setup_PID_LB(0.8 ,0.0 ,0.1 ,0 ,300);
-   Setup_PID_RF(0.8 ,0.0 ,0.1 ,0 ,300);
-   Setup_PID_RB(0.8 ,0.0 ,0.1 ,0 ,300);
+   Setup_PID_LF(1.0 ,0.0 ,0.2 ,0 ,300);
+   Setup_PID_LB(1.0 ,0.0 ,0.2 ,0 ,300);
+   Setup_PID_RF(1.0 ,0.0 ,0.2 ,0 ,300);
+   Setup_PID_RB(1.0 ,0.0 ,0.2 ,0 ,300);
 
 //   Setup_PID_EXTRA1(0.5 ,0.1 ,0 ,0 ,280);
 //   Setup_PID_EXTRA2(0.5 ,0.1 ,0 ,0 ,280);
@@ -217,7 +219,7 @@ int main(void)
 
    HAL_UART_Receive_IT(&huart2, (uint8_t*)&Str_PS2, sizeof(Str_PS2));
 
-   Setup_MPU6050(&hi2c2);
+//   Setup_MPU6050(&hi2c2);
 
   /* USER CODE END 2 */
 
@@ -287,17 +289,9 @@ int main(void)
 	    	      Motor_DutyCycle_EXTRA2(0);
 	    }
 //	    addr = Scan_I2C(&hi2c2);
-	    ReadMPU6050();
+//	    ReadMPU6050();
 //	    Rad = getDegreeZ();
 //	    Rad = getRadianZ();
-
-
-//	     Motor_DutyCycle_LF(4095);
-//	     Motor_DutyCycle_LB(4095);
-//	     Motor_DutyCycle_RF(4095);
-//	     Motor_DutyCycle_RB(4095);
-	    // Motor_DutyCycle_EXTRA1(4000);
-	    // Motor_DutyCycle_EXTRA2(-4000);
 
 	    // count[0] = getCount(&htim5);
 	    // count[1] = getCount(&htim1);
@@ -314,11 +308,11 @@ int main(void)
 	    // RPM[4] = getRPM_TIM_Wheel(&htim3, EXTRA1);
 	    // RPM[5] = getRPM_TIM_Wheel(&htim2, EXTRA2);
 
-	    // Odometry_Forward_Kinematic(getRPM_to_Rad_s(RPM[0]), getRPM_to_Rad_s(RPM[1]), getRPM_to_Rad_s(RPM[2]), getRPM_to_Rad_s(RPM[3]));
-	    // x = get_Vz();
+//	     Odometry_Forward_Kinematic(getRPM_to_Rad_s(360), getRPM_to_Rad_s(-360), getRPM_to_Rad_s(360), getRPM_to_Rad_s(-360));
+//	     Vx = get_Vy();
 #ifdef ROBOT_1
+	    app_ros_comm_runner();
         if(Str_PS2.attackBtnBit.attack1 == 1){
-        	app_ros_comm_runner();
 
         	PID[0] = Motor_Speed_LF((motor_cmdvel_ptr_t.v1/Gear_Ratio), RPM[0]);
         	PID[1] = Motor_Speed_LB((motor_cmdvel_ptr_t.v2/Gear_Ratio), RPM[1]);
@@ -344,22 +338,37 @@ int main(void)
         Vy = map(Str_PS2.stickValue[1], 100.0f, -100.0f, 2.3f, -2.3f);
         Vz = map(Str_PS2.stickValue[3], 100.0f, -100.0f, 4.0f, -4.0f);
 
-                	//	    Inverse_Kinematic(Vx, Vy, Vz);
+        Inverse_Kinematic(Vx, Vy, Vz);
         Inverse_Kinematic_Lock_Direction(Vx ,Vy ,Vz ,Rad);
 
         PID[0] = Motor_Speed_LF(getRad_s_to_RPM(get_w_LF()), RPM[0]);
         PID[1] = Motor_Speed_LB(getRad_s_to_RPM(get_w_LB()), RPM[1]);
         PID[2] = Motor_Speed_RF(getRad_s_to_RPM(get_w_RF()), RPM[2]);
         PID[3] = Motor_Speed_RB(getRad_s_to_RPM(get_w_RB()), RPM[3]);
-
-        Game_Play_ROBOT_2();
+//
+//        Motor_DutyCycle_LF(map(getRad_s_to_RPM(get_w_LF()), -300, 300, -4095, 4095));
+//        Motor_DutyCycle_LB(map(getRad_s_to_RPM(get_w_LB()), -300, 300, -4095, 4095));
+//        Motor_DutyCycle_RF(map(getRad_s_to_RPM(get_w_RF()), -300, 300, -4095, 4095));
+//        Motor_DutyCycle_RB(map(getRad_s_to_RPM(get_w_RB()), -300, 300, -4095, 4095));
+//
+        Game_Play_ROBOT_2(&htim9);
 #endif
+//			digitalWrite("PE10", 0);
+//			digitalWrite("PE08", 1);
+//
+//			Motor_DutyCycle_LF(4095);
+//			Motor_DutyCycle_LB(4095);
+//			Motor_DutyCycle_RF(4095);
+//			Motor_DutyCycle_RB(4095);
+//
+//			Motor_DutyCycle_EXTRA1(4000);
+//			Motor_DutyCycle_EXTRA2(-4000);
 
-//	     PID[0] = Motor_Speed_LF(180, RPM[0]);
-//	     PID[1] = Motor_Speed_LB(180, RPM[1]);
-//	     PID[2] = Motor_Speed_RF(180, RPM[2]);
-//	     PID[3] = Motor_Speed_RB(180, RPM[3]);
-	  }
+//	     PID[0] = Motor_Speed_LF(300, RPM[0]);
+//	     PID[1] = Motor_Speed_LB(300, RPM[1]);
+//	     PID[2] = Motor_Speed_RF(300, RPM[2]);
+//	     PID[3] = Motor_Speed_RB(300, RPM[3]);
+		}
   }
 
   /* USER CODE END 3 */
@@ -848,9 +857,9 @@ static void MX_TIM9_Init(void)
 
   /* USER CODE END TIM9_Init 1 */
   htim9.Instance = TIM9;
-  htim9.Init.Prescaler = 2-1;
+  htim9.Init.Prescaler = 96-1;
   htim9.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim9.Init.Period = 4096-1;
+  htim9.Init.Period = 10000;
   htim9.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim9.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_PWM_Init(&htim9) != HAL_OK)
@@ -1251,7 +1260,7 @@ static void MX_GPIO_Init(void)
 //                Str_PS2.Header[0] = 'R';
 //                joy_recv_fsm = 1;
 //            } else {
-//                // ข้อมูลไม่ถูกต้อง => reset FSM
+//                // ข้อมูลไม่ถู�?ต้อง => reset FSM
 //                joy_recv_fsm = 0;
 //                cpy_pointer = 0;
 //                uart_resetting = 1;

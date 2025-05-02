@@ -12,7 +12,8 @@
 #include "string.h"
 #include "Encoder_Motor.h"
 
-void Game_Play_ROBOT_2();
+
+void Game_Play_ROBOT_2(TIM_HandleTypeDef* TIM_Servo);
 
 void Game_Play_ROBOT_1();
 
